@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { DollarSign, ChartBar, Calendar, TrendingUp } from "lucide-react";
+import { DollarSign, ChartBar, Calendar, TrendingUp, Pencil, Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,6 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface Expense {
   id: number;
@@ -26,6 +36,8 @@ const Index = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("عام");
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [deleteExpenseId, setDeleteExpenseId] = useState<number | null>(null);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,21 +52,59 @@ const Index = () => {
       return;
     }
 
-    const newExpense: Expense = {
-      id: Date.now(),
-      amount: parseFloat(amount),
-      description,
-      date: new Date().toLocaleDateString('ar-SA'),
-      category,
-    };
+    if (editingExpense) {
+      // تحديث المصروف
+      const updatedExpenses = expenses.map(expense => 
+        expense.id === editingExpense.id 
+          ? {
+              ...expense,
+              amount: parseFloat(amount),
+              description,
+              category,
+            }
+          : expense
+      );
+      setExpenses(updatedExpenses);
+      setEditingExpense(null);
+      toast({
+        title: "تم التحديث بنجاح",
+        description: "تم تحديث المصروف بنجاح",
+      });
+    } else {
+      // إضافة مصروف جديد
+      const newExpense: Expense = {
+        id: Date.now(),
+        amount: parseFloat(amount),
+        description,
+        date: new Date().toLocaleDateString('ar-SA'),
+        category,
+      };
+      setExpenses([newExpense, ...expenses]);
+      toast({
+        title: "تم التسجيل بنجاح",
+        description: "تم تسجيل المصروف بنجاح",
+      });
+    }
 
-    setExpenses([newExpense, ...expenses]);
     setAmount("");
     setDescription("");
-    
+    setCategory("عام");
+  };
+
+  const handleEdit = (expense: Expense) => {
+    setEditingExpense(expense);
+    setAmount(expense.amount.toString());
+    setDescription(expense.description);
+    setCategory(expense.category);
+  };
+
+  const handleDelete = (expenseId: number) => {
+    const updatedExpenses = expenses.filter(expense => expense.id !== expenseId);
+    setExpenses(updatedExpenses);
+    setDeleteExpenseId(null);
     toast({
-      title: "تم التسجيل بنجاح",
-      description: "تم تسجيل المصروف بنجاح",
+      title: "تم الحذف بنجاح",
+      description: "تم حذف المصروف بنجاح",
     });
   };
 
@@ -146,8 +196,24 @@ const Index = () => {
             </div>
 
             <Button type="submit" className="w-full">
-              تسجيل المصروف
+              {editingExpense ? "تحديث المصروف" : "تسجيل المصروف"}
             </Button>
+            
+            {editingExpense && (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full mt-2"
+                onClick={() => {
+                  setEditingExpense(null);
+                  setAmount("");
+                  setDescription("");
+                  setCategory("عام");
+                }}
+              >
+                إلغاء التعديل
+              </Button>
+            )}
           </form>
         </Card>
 
@@ -203,7 +269,25 @@ const Index = () => {
                     {expense.category} - {expense.date}
                   </p>
                 </div>
-                <p className="font-bold">${expense.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                <div className="flex items-center gap-4">
+                  <p className="font-bold">${expense.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(expense)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeleteExpenseId(expense.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
             ))}
             
@@ -213,6 +297,23 @@ const Index = () => {
           </div>
         </Card>
       </div>
+
+      <AlertDialog open={deleteExpenseId !== null} onOpenChange={() => setDeleteExpenseId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>هل أنت متأكد من حذف هذا المصروف؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              لا يمكن التراجع عن هذا الإجراء بعد تنفيذه.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteExpenseId && handleDelete(deleteExpenseId)}>
+              تأكيد الحذف
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
