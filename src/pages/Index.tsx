@@ -1,5 +1,4 @@
-
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,10 +34,17 @@ const Index = () => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("عام");
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>(() => {
+    const savedExpenses = localStorage.getItem('expenses');
+    return savedExpenses ? JSON.parse(savedExpenses) : [];
+  });
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [deleteExpenseId, setDeleteExpenseId] = useState<number | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+  }, [expenses]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +59,6 @@ const Index = () => {
     }
 
     if (editingExpense) {
-      // تحديث المصروف
       const updatedExpenses = expenses.map(expense => 
         expense.id === editingExpense.id 
           ? {
@@ -71,7 +76,6 @@ const Index = () => {
         description: "تم تحديث المصروف بنجاح",
       });
     } else {
-      // إضافة مصروف جديد
       const newExpense: Expense = {
         id: Date.now(),
         amount: parseFloat(amount),
@@ -110,7 +114,6 @@ const Index = () => {
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
-  // حساب المصاريف حسب الفئة
   const expensesByCategory = useMemo(() => {
     return expenses.reduce((acc, expense) => {
       acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
@@ -118,7 +121,6 @@ const Index = () => {
     }, {} as Record<string, number>);
   }, [expenses]);
 
-  // حساب مصاريف آخر 7 أيام
   const last7DaysExpenses = useMemo(() => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -132,7 +134,6 @@ const Index = () => {
     }, 0);
   }, [expenses]);
 
-  // حساب متوسط المصاريف اليومي
   const averageDailyExpense = useMemo(() => {
     if (expenses.length === 0) return 0;
     
