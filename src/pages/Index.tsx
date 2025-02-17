@@ -1,10 +1,10 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { DollarSign, ChartBar } from "lucide-react";
+import { DollarSign, ChartBar, Calendar, TrendingUp } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -60,6 +60,36 @@ const Index = () => {
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
+  // حساب المصاريف حسب الفئة
+  const expensesByCategory = useMemo(() => {
+    return expenses.reduce((acc, expense) => {
+      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+      return acc;
+    }, {} as Record<string, number>);
+  }, [expenses]);
+
+  // حساب مصاريف آخر 7 أيام
+  const last7DaysExpenses = useMemo(() => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    return expenses.reduce((sum, expense) => {
+      const expenseDate = new Date(expense.date);
+      if (expenseDate >= sevenDaysAgo) {
+        return sum + expense.amount;
+      }
+      return sum;
+    }, 0);
+  }, [expenses]);
+
+  // حساب متوسط المصاريف اليومي
+  const averageDailyExpense = useMemo(() => {
+    if (expenses.length === 0) return 0;
+    
+    const uniqueDays = new Set(expenses.map(e => e.date)).size;
+    return totalExpenses / uniqueDays;
+  }, [expenses, totalExpenses]);
+
   return (
     <div className="container mx-auto p-4 max-w-4xl" dir="rtl">
       <div className="space-y-8">
@@ -79,7 +109,6 @@ const Index = () => {
                     type="text"
                     value={amount}
                     onChange={(e) => {
-                      // السماح فقط بالأرقام والنقطة العشرية
                       const value = e.target.value;
                       if (value === '' || /^\d*\.?\d*$/.test(value)) {
                         setAmount(value);
@@ -122,7 +151,7 @@ const Index = () => {
           </form>
         </Card>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">إجمالي المصاريف</h2>
@@ -130,7 +159,35 @@ const Index = () => {
             </div>
             <p className="mt-2 text-3xl font-bold">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">مصاريف آخر 7 أيام</h2>
+              <Calendar className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="mt-2 text-3xl font-bold">${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">متوسط المصاريف اليومي</h2>
+              <TrendingUp className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <p className="mt-2 text-3xl font-bold">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </Card>
         </div>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">المصاريف حسب الفئة</h2>
+          <div className="space-y-4">
+            {Object.entries(expensesByCategory).map(([cat, amount]) => (
+              <div key={cat} className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <p className="font-medium">{cat}</p>
+                <p className="font-bold">${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
 
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">سجل المصاريف</h2>
