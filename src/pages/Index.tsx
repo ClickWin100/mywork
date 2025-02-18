@@ -204,8 +204,8 @@ const Index = () => {
         <Card className="p-6 bg-[#FDE1D3] border-none shadow-md">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-[#1A1F2C]">المبلغ (بالدولار)</label>
+              <div>
+                <label className="block text-sm font-medium text-[#1A1F2C] mb-2">المبلغ (بالدولار)</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                   <Input
@@ -223,8 +223,8 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
                   <label className="block text-sm font-medium text-[#1A1F2C]">الفئة</label>
                   <Dialog>
                     <DialogTrigger asChild>
@@ -270,8 +270,8 @@ const Index = () => {
                 </Select>
               </div>
 
-              <div className="space-y-2 md:col-span-2">
-                <label className="block text-sm font-medium text-[#1A1F2C]">الوصف</label>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-[#1A1F2C] mb-2">الوصف</label>
                 <Input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -314,7 +314,7 @@ const Index = () => {
             <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
 
-          <Card className="p-6 bg-[#FFDEE2] border-none shadow-md">
+          <Card className="p-6 bg-[#D3E4FD] border-none shadow-md">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-[#1A1F2C]">مصاريف آخر 7 أيام</h2>
               <Calendar className="h-5 w-5 text-[#403E43]" />
