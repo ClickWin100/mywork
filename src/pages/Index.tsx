@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { DollarSign, ChartBar, Calendar, TrendingUp, Pencil, Trash2 } from "lucide-react";
+import { DollarSign, ChartBar, Calendar, TrendingUp, Pencil, Trash2, Plus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,6 +21,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface Expense {
   id: number;
@@ -38,6 +47,11 @@ const Index = () => {
     const savedExpenses = localStorage.getItem('expenses');
     return savedExpenses ? JSON.parse(savedExpenses) : [];
   });
+  const [categories, setCategories] = useState<string[]>(() => {
+    const savedCategories = localStorage.getItem('categories');
+    return savedCategories ? JSON.parse(savedCategories) : ["عام", "مواد", "معدات", "خدمات"];
+  });
+  const [newCategory, setNewCategory] = useState("");
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [deleteExpenseId, setDeleteExpenseId] = useState<number | null>(null);
   const { toast } = useToast();
@@ -45,6 +59,37 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('expenses', JSON.stringify(expenses));
   }, [expenses]);
+
+  useEffect(() => {
+    localStorage.setItem('categories', JSON.stringify(categories));
+  }, [categories]);
+
+  const handleAddCategory = () => {
+    if (!newCategory.trim()) {
+      toast({
+        title: "خطأ",
+        description: "الرجاء إدخال اسم الفئة",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (categories.includes(newCategory.trim())) {
+      toast({
+        title: "خطأ",
+        description: "هذه الفئة موجودة مسبقاً",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCategories([...categories, newCategory.trim()]);
+    setNewCategory("");
+    toast({
+      title: "تم بنجاح",
+      description: "تمت إضافة الفئة الجديدة",
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,16 +217,47 @@ const Index = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="block text-sm font-medium">الفئة</label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium">الفئة</label>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <Plus className="h-4 w-4 ml-1" />
+                        فئة جديدة
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>إضافة فئة جديدة</DialogTitle>
+                        <DialogDescription>
+                          أدخل اسم الفئة الجديدة التي تريد إضافتها
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <Input
+                          value={newCategory}
+                          onChange={(e) => setNewCategory(e.target.value)}
+                          placeholder="اسم الفئة"
+                        />
+                      </div>
+                      <DialogFooter>
+                        <Button onClick={handleAddCategory}>
+                          إضافة الفئة
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="عام">عام</SelectItem>
-                    <SelectItem value="مواد">مواد</SelectItem>
-                    <SelectItem value="معدات">معدات</SelectItem>
-                    <SelectItem value="خدمات">خدمات</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
