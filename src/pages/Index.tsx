@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -189,18 +188,18 @@ const Index = () => {
   }, [expenses, totalExpenses]);
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl" dir="rtl">
+    <div className="container mx-auto p-4 max-w-4xl bg-[#F2FCE2]" dir="rtl">
       <div className="space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">سجل المصاريف</h1>
+          <h1 className="text-3xl font-bold text-[#1A1F2C]">سجل المصاريف</h1>
           <p className="text-muted-foreground">سجل وتتبع مصاريفك بسهولة</p>
         </div>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-[#FDE1D3] border-none shadow-md">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="block text-sm font-medium">المبلغ (بالدولار)</label>
+                <label className="block text-sm font-medium text-[#1A1F2C]">المبلغ (بالدولار)</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                   <Input
@@ -213,22 +212,22 @@ const Index = () => {
                       }
                     }}
                     placeholder="أدخل المبلغ"
-                    className="pl-10"
+                    className="pl-10 bg-white/50"
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium">الفئة</label>
+                  <label className="block text-sm font-medium text-[#1A1F2C]">الفئة</label>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" className="hover:bg-[#E5DEFF]/50">
                         <Plus className="h-4 w-4 ml-1" />
                         فئة جديدة
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="bg-[#F1F0FB]">
                       <DialogHeader>
                         <DialogTitle>إضافة فئة جديدة</DialogTitle>
                         <DialogDescription>
@@ -240,10 +239,11 @@ const Index = () => {
                           value={newCategory}
                           onChange={(e) => setNewCategory(e.target.value)}
                           placeholder="اسم الفئة"
+                          className="bg-white/50"
                         />
                       </div>
                       <DialogFooter>
-                        <Button onClick={handleAddCategory}>
+                        <Button onClick={handleAddCategory} className="bg-[#403E43] hover:bg-[#1A1F2C]">
                           إضافة الفئة
                         </Button>
                       </DialogFooter>
@@ -251,7 +251,7 @@ const Index = () => {
                   </Dialog>
                 </div>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white/50">
                     <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>
@@ -265,16 +265,17 @@ const Index = () => {
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <label className="block text-sm font-medium">الوصف</label>
+                <label className="block text-sm font-medium text-[#1A1F2C]">الوصف</label>
                 <Input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="أدخل وصف المصروف"
+                  className="bg-white/50"
                 />
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full bg-[#403E43] hover:bg-[#1A1F2C]">
               {editingExpense ? "تحديث المصروف" : "تسجيل المصروف"}
             </Button>
             
@@ -282,7 +283,7 @@ const Index = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full mt-2"
+                className="w-full mt-2 border-[#403E43] text-[#403E43] hover:bg-[#403E43] hover:text-white"
                 onClick={() => {
                   setEditingExpense(null);
                   setAmount("");
@@ -297,64 +298,54 @@ const Index = () => {
         </Card>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="p-6">
+          <Card className="p-6 bg-[#E5DEFF] border-none shadow-md">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">إجمالي المصاريف</h2>
-              <ChartBar className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-xl font-semibold text-[#1A1F2C]">إجمالي المصاريف</h2>
+              <ChartBar className="h-5 w-5 text-[#403E43]" />
             </div>
-            <p className="mt-2 text-3xl font-bold">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 bg-[#FFDEE2] border-none shadow-md">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">مصاريف آخر 7 أيام</h2>
-              <Calendar className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-xl font-semibold text-[#1A1F2C]">مصاريف آخر 7 أيام</h2>
+              <Calendar className="h-5 w-5 text-[#403E43]" />
             </div>
-            <p className="mt-2 text-3xl font-bold">${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 bg-[#FEF7CD] border-none shadow-md">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">متوسط المصاريف اليومي</h2>
-              <TrendingUp className="h-5 w-5 text-muted-foreground" />
+              <h2 className="text-xl font-semibold text-[#1A1F2C]">متوسط المصاريف اليومي</h2>
+              <TrendingUp className="h-5 w-5 text-[#403E43]" />
             </div>
-            <p className="mt-2 text-3xl font-bold">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
         </div>
 
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">المصاريف حسب الفئة</h2>
-          <div className="space-y-4">
-            {Object.entries(expensesByCategory).map(([cat, amount]) => (
-              <div key={cat} className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                <p className="font-medium">{cat}</p>
-                <p className="font-bold">${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">سجل المصاريف</h2>
+        <Card className="p-6 bg-[#F1F0FB] border-none shadow-md">
+          <h2 className="text-xl font-semibold mb-4 text-[#1A1F2C]">جميع المصاريف</h2>
           <div className="space-y-4">
             {expenses.map((expense) => (
               <div
                 key={expense.id}
-                className="flex items-center justify-between p-4 bg-muted rounded-lg"
+                className="flex items-center justify-between p-4 bg-white/50 rounded-lg hover:bg-white/70 transition-colors"
               >
                 <div>
-                  <p className="font-medium">{expense.description}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {expense.category} - {expense.date}
-                  </p>
+                  <p className="font-medium text-[#1A1F2C]">{expense.description}</p>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span className="px-2 py-1 bg-[#E5DEFF] rounded text-[#403E43]">{expense.category}</span>
+                    <span>{expense.date}</span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <p className="font-bold">${expense.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                  <p className="font-bold text-[#1A1F2C]">${expense.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                   <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => handleEdit(expense)}
+                      className="hover:bg-[#E5DEFF]"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -362,6 +353,7 @@ const Index = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => setDeleteExpenseId(expense.id)}
+                      className="hover:bg-[#FFDEE2]"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -378,7 +370,7 @@ const Index = () => {
       </div>
 
       <AlertDialog open={deleteExpenseId !== null} onOpenChange={() => setDeleteExpenseId(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-[#F1F0FB]">
           <AlertDialogHeader>
             <AlertDialogTitle>هل أنت متأكد من حذف هذا المصروف؟</AlertDialogTitle>
             <AlertDialogDescription>
@@ -386,8 +378,11 @@ const Index = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <AlertDialogAction onClick={() => deleteExpenseId && handleDelete(deleteExpenseId)}>
+            <AlertDialogCancel className="hover:bg-[#FFDEE2]">إلغاء</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => deleteExpenseId && handleDelete(deleteExpenseId)}
+              className="bg-[#403E43] hover:bg-[#1A1F2C]"
+            >
               تأكيد الحذف
             </AlertDialogAction>
           </AlertDialogFooter>
