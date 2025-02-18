@@ -42,14 +42,20 @@ interface Expense {
 const Index = () => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("عام");
+  const [category, setCategory] = useState("أجهزة إعلانات");
   const [expenses, setExpenses] = useState<Expense[]>(() => {
     const savedExpenses = localStorage.getItem('expenses');
     return savedExpenses ? JSON.parse(savedExpenses) : [];
   });
   const [categories, setCategories] = useState<string[]>(() => {
     const savedCategories = localStorage.getItem('categories');
-    return savedCategories ? JSON.parse(savedCategories) : ["عام", "مواد", "معدات", "خدمات"];
+    return savedCategories ? JSON.parse(savedCategories) : [
+      "أجهزة إعلانات",
+      "خادم",
+      "نطاق",
+      "اشتراك",
+      "إضافات الموقع"
+    ];
   });
   const [newCategory, setNewCategory] = useState("");
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
@@ -138,7 +144,7 @@ const Index = () => {
 
     setAmount("");
     setDescription("");
-    setCategory("عام");
+    setCategory("أجهزة إعلانات");
   };
 
   const handleEdit = (expense: Expense) => {
@@ -189,15 +195,15 @@ const Index = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl bg-[#F2FCE2]" dir="rtl">
-      <div className="space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-[#1A1F2C]">سجل المصاريف</h1>
-          <p className="text-muted-foreground">سجل وتتبع مصاريفك بسهولة</p>
+      <div className="space-y-6">
+        <div className="text-center space-y-2 bg-[#1A1F2C] text-white py-6 rounded-lg shadow-md">
+          <h1 className="text-3xl font-bold">نظام مصاريف شركة الإعلانات</h1>
+          <p className="text-gray-300">تتبع وإدارة مصاريف الشركة بسهولة</p>
         </div>
 
         <Card className="p-6 bg-[#FDE1D3] border-none shadow-md">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-[#1A1F2C]">المبلغ (بالدولار)</label>
                 <div className="relative">
@@ -275,25 +281,27 @@ const Index = () => {
               </div>
             </div>
 
-            <Button type="submit" className="w-full bg-[#403E43] hover:bg-[#1A1F2C]">
-              {editingExpense ? "تحديث المصروف" : "تسجيل المصروف"}
-            </Button>
-            
-            {editingExpense && (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full mt-2 border-[#403E43] text-[#403E43] hover:bg-[#403E43] hover:text-white"
-                onClick={() => {
-                  setEditingExpense(null);
-                  setAmount("");
-                  setDescription("");
-                  setCategory("عام");
-                }}
-              >
-                إلغاء التعديل
+            <div className="pt-4 border-t border-gray-200">
+              <Button type="submit" className="w-full bg-[#403E43] hover:bg-[#1A1F2C]">
+                {editingExpense ? "تحديث المصروف" : "تسجيل المصروف"}
               </Button>
-            )}
+              
+              {editingExpense && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full mt-2 border-[#403E43] text-[#403E43] hover:bg-[#403E43] hover:text-white"
+                  onClick={() => {
+                    setEditingExpense(null);
+                    setAmount("");
+                    setDescription("");
+                    setCategory("أجهزة إعلانات");
+                  }}
+                >
+                  إلغاء التعديل
+                </Button>
+              )}
+            </div>
           </form>
         </Card>
 
@@ -324,7 +332,24 @@ const Index = () => {
         </div>
 
         <Card className="p-6 bg-[#F1F0FB] border-none shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-[#1A1F2C]">جميع المصاريف</h2>
+          <h2 className="text-xl font-semibold mb-4 text-[#1A1F2C]">المصاريف حسب الفئة</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {Object.entries(expensesByCategory).map(([cat, amount]) => (
+              <div key={cat} className="flex items-center justify-between p-4 bg-white/50 rounded-lg">
+                <span className="font-medium text-[#1A1F2C]">{cat}</span>
+                <span className="font-bold text-[#403E43]">${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-[#F1F0FB] border-none shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-[#1A1F2C]">سجل المصاريف</h2>
+            <span className="text-sm text-muted-foreground">
+              {expenses.length} مصروف
+            </span>
+          </div>
           <div className="space-y-4">
             {expenses.map((expense) => (
               <div
