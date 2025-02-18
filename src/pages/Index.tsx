@@ -1,3 +1,4 @@
+
 import { useState, useMemo, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -111,6 +112,7 @@ const Index = () => {
               amount: parseFloat(amount),
               description,
               category,
+              date: new Date().toLocaleDateString('ar-SA'), // تحديث التاريخ عند التعديل
             }
           : expense
       );
