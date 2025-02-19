@@ -117,14 +117,14 @@ const Index = () => {
               amount: parseFloat(amount),
               description,
               category,
-              date: new Date().toLocaleDateString('ar-SA'), // تحديث التاريخ عند التعديل
+              date: new Date().toLocaleDateString('en-US'),
             }
           : expense
       );
       setExpenses(updatedExpenses);
       setEditingExpense(null);
       toast({
-        title: "تم التحديث بنجاح",
+        title: "تم التحديث",
         description: "تم تحديث المصروف بنجاح",
       });
     } else {
@@ -132,12 +132,12 @@ const Index = () => {
         id: Date.now(),
         amount: parseFloat(amount),
         description,
-        date: new Date().toLocaleDateString('ar-SA'),
+        date: new Date().toLocaleDateString('en-US'),
         category,
       };
       setExpenses([newExpense, ...expenses]);
       toast({
-        title: "تم التسجيل بنجاح",
+        title: "تم التسجيل",
         description: "تم تسجيل المصروف بنجاح",
       });
     }
