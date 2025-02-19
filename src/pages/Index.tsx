@@ -193,15 +193,40 @@ const Index = () => {
     return totalExpenses / uniqueDays;
   }, [expenses, totalExpenses]);
 
+  const getPercentageChange = () => {
+    if (expenses.length < 2) return null;
+    
+    const currentTotal = last7DaysExpenses;
+    const previousWeekExpenses = expenses.reduce((sum, expense) => {
+      const expenseDate = new Date(expense.date);
+      const twoWeeksAgo = new Date();
+      const oneWeekAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      
+      if (expenseDate >= twoWeeksAgo && expenseDate < oneWeekAgo) {
+        return sum + expense.amount;
+      }
+      return sum;
+    }, 0);
+
+    if (previousWeekExpenses === 0) return null;
+    
+    const percentageChange = ((currentTotal - previousWeekExpenses) / previousWeekExpenses) * 100;
+    return percentageChange;
+  };
+
+  const percentageChange = getPercentageChange();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F4F9FF] to-[#EDF4FF]" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-[#F4F9FF] to-[#EDF4FF] pb-8" dir="rtl">
       <div className="container mx-auto p-4 max-w-4xl space-y-6">
         <div className="text-center space-y-2 bg-gradient-to-r from-[#2C3E50] to-[#3498DB] text-[#F1F1F1] py-8 rounded-xl shadow-lg">
-          <h1 className="text-3xl font-bold">نظام مصاريف شركة الإعلانات</h1>
-          <p className="text-[#E5E9F0]">تتبع وإدارة مصاريف الشركة بسهولة</p>
+          <h1 className="text-3xl font-bold animate-fade-in">نظام مصاريف شركة الإعلانات</h1>
+          <p className="text-[#E5E9F0] animate-fade-in">تتبع وإدارة مصاريف الشركة بسهولة</p>
         </div>
 
-        <Card className="p-6 bg-[#F1F0FB] border-none shadow-lg rounded-xl">
+        <Card className="p-6 bg-[#F1F0FB] border-none shadow-lg rounded-xl transform hover:scale-[1.01] transition-all duration-200">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-6 md:grid-cols-2">
               <div>
@@ -306,36 +331,50 @@ const Index = () => {
         </Card>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="p-6 bg-gradient-to-br from-[#E5DEFF] to-[#D3E4FD] border-none shadow-lg rounded-xl">
+          <Card className="group p-6 bg-gradient-to-br from-[#E5DEFF] to-[#D3E4FD] border-none shadow-lg rounded-xl transform hover:scale-[1.02] transition-all duration-200">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-[#2C3E50]">إجمالي المصاريف</h2>
-              <ChartBar className="h-5 w-5 text-[#3498DB]" />
+              <ChartBar className="h-5 w-5 text-[#3498DB] group-hover:scale-110 transition-transform" />
             </div>
-            <p className="mt-2 text-3xl font-bold text-[#2C3E50]">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#2C3E50] animate-fade-in">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-[#F2FCE2] to-[#D3E4FD] border-none shadow-lg rounded-xl">
+          <Card className="group p-6 bg-gradient-to-br from-[#F2FCE2] to-[#D3E4FD] border-none shadow-lg rounded-xl transform hover:scale-[1.02] transition-all duration-200">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-[#2C3E50]">مصاريف آخر 7 أيام</h2>
-              <Calendar className="h-5 w-5 text-[#2ECC71]" />
+              <Calendar className="h-5 w-5 text-[#2ECC71] group-hover:scale-110 transition-transform" />
             </div>
-            <p className="mt-2 text-3xl font-bold text-[#2C3E50]">${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#2C3E50] animate-fade-in">
+              ${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+            </p>
+            {percentageChange !== null && (
+              <p className={`text-sm mt-2 ${percentageChange > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                {percentageChange > 0 ? '↑' : '↓'} {Math.abs(percentageChange).toFixed(1)}% مقارنة بالأسبوع السابق
+              </p>
+            )}
           </Card>
 
-          <Card className="p-6 bg-gradient-to-br from-[#FEF7CD] to-[#FDE1D3] border-none shadow-lg rounded-xl">
+          <Card className="group p-6 bg-gradient-to-br from-[#FEF7CD] to-[#FDE1D3] border-none shadow-lg rounded-xl transform hover:scale-[1.02] transition-all duration-200">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-[#2C3E50]">متوسط المصاريف اليومي</h2>
-              <TrendingUp className="h-5 w-5 text-[#F1C40F]" />
+              <TrendingUp className="h-5 w-5 text-[#F1C40F] group-hover:scale-110 transition-transform" />
             </div>
-            <p className="mt-2 text-3xl font-bold text-[#2C3E50]">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#2C3E50] animate-fade-in">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
         </div>
 
-        <Card className="p-6 bg-[#F1F0FB] border-none shadow-lg rounded-xl">
-          <h2 className="text-xl font-semibold mb-4 text-[#2C3E50]">المصاريف حسب الفئة</h2>
+        <Card className="p-6 bg-[#F1F0FB] border-none shadow-lg rounded-xl transform hover:scale-[1.01] transition-all duration-200">
+          <h2 className="text-xl font-semibold mb-4 text-[#2C3E50] flex items-center gap-2">
+            <ChartBar className="h-5 w-5 text-[#3498DB]" />
+            المصاريف حسب الفئة
+          </h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {Object.entries(expensesByCategory).map(([cat, amount]) => (
-              <div key={cat} className="flex items-center justify-between p-4 bg-gradient-to-r from-[#E5DEFF] to-[#F2FCE2] rounded-lg border border-[#E5E9F0]">
+            {Object.entries(expensesByCategory).map(([cat, amount], index) => (
+              <div 
+                key={cat} 
+                className="flex items-center justify-between p-4 bg-gradient-to-r from-[#E5DEFF] to-[#F2FCE2] rounded-lg border border-[#E5E9F0] hover:border-[#3498DB] transition-all duration-200 animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <span className="font-medium text-[#2C3E50]">{cat}</span>
                 <span className="font-bold text-[#3498DB]">${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
               </div>
@@ -343,18 +382,22 @@ const Index = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-[#F1F0FB] border-none shadow-lg rounded-xl">
+        <Card className="p-6 bg-[#F1F0FB] border-none shadow-lg rounded-xl transform hover:scale-[1.01] transition-all duration-200">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-[#2C3E50]">سجل المصاريف</h2>
-            <span className="text-sm text-[#7F8C8D] bg-[#E5DEFF] px-3 py-1 rounded-full">
+            <h2 className="text-xl font-semibold text-[#2C3E50] flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-[#3498DB]" />
+              سجل المصاريف
+            </h2>
+            <span className="text-sm text-[#7F8C8D] bg-[#E5DEFF] px-3 py-1 rounded-full animate-fade-in">
               {expenses.length} مصروف
             </span>
           </div>
           <div className="space-y-4">
-            {expenses.map((expense) => (
+            {expenses.map((expense, index) => (
               <div
                 key={expense.id}
-                className="flex items-center justify-between p-4 bg-gradient-to-r from-[#F2FCE2] to-[#FEF7CD] rounded-lg border border-[#E5E9F0] hover:border-[#3498DB]/30 transition-colors"
+                className="flex items-center justify-between p-4 bg-gradient-to-r from-[#F2FCE2] to-[#FEF7CD] rounded-lg border border-[#E5E9F0] hover:border-[#3498DB]/30 transition-all duration-200 animate-fade-in hover:scale-[1.01]"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div>
                   <p className="font-medium text-[#2C3E50]">{expense.description}</p>
@@ -388,7 +431,7 @@ const Index = () => {
             ))}
             
             {expenses.length === 0 && (
-              <p className="text-center text-[#7F8C8D]">لا توجد مصاريف مسجلة</p>
+              <p className="text-center text-[#7F8C8D] py-8 animate-fade-in">لا توجد مصاريف مسجلة</p>
             )}
           </div>
         </Card>
