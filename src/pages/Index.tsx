@@ -194,20 +194,20 @@ const Index = () => {
   }, [expenses, totalExpenses]);
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl bg-[#F2FCE2]" dir="rtl">
-      <div className="space-y-6">
-        <div className="text-center space-y-2 bg-[#1A1F2C] text-white py-6 rounded-lg shadow-md">
+    <div className="min-h-screen bg-gradient-to-br from-[#F4F9FF] to-[#EDF4FF]" dir="rtl">
+      <div className="container mx-auto p-4 max-w-4xl space-y-6">
+        <div className="text-center space-y-2 bg-gradient-to-r from-[#2C3E50] to-[#3498DB] text-white py-8 rounded-xl shadow-lg">
           <h1 className="text-3xl font-bold">نظام مصاريف شركة الإعلانات</h1>
-          <p className="text-gray-300">تتبع وإدارة مصاريف الشركة بسهولة</p>
+          <p className="text-gray-100">تتبع وإدارة مصاريف الشركة بسهولة</p>
         </div>
 
-        <Card className="p-6 bg-[#FDE1D3] border-none shadow-md">
+        <Card className="p-6 bg-white/90 backdrop-blur-sm border-none shadow-lg rounded-xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-[#1A1F2C] mb-2">المبلغ (بالدولار)</label>
+                <label className="block text-sm font-medium text-[#2C3E50] mb-2">المبلغ (بالدولار)</label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                  <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-[#3498DB]" />
                   <Input
                     type="text"
                     value={amount}
@@ -218,22 +218,22 @@ const Index = () => {
                       }
                     }}
                     placeholder="أدخل المبلغ"
-                    className="pl-10 bg-white/50"
+                    className="pl-10 bg-white/80 border-[#E5E9F0] focus:border-[#3498DB] focus:ring-[#3498DB]"
                   />
                 </div>
               </div>
               
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-[#1A1F2C]">الفئة</label>
+                  <label className="block text-sm font-medium text-[#2C3E50]">الفئة</label>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="hover:bg-[#E5DEFF]/50">
+                      <Button variant="ghost" size="sm" className="hover:bg-[#3498DB]/10 text-[#3498DB]">
                         <Plus className="h-4 w-4 ml-1" />
                         فئة جديدة
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="bg-[#F1F0FB]">
+                    <DialogContent className="bg-white backdrop-blur-lg">
                       <DialogHeader>
                         <DialogTitle>إضافة فئة جديدة</DialogTitle>
                         <DialogDescription>
@@ -245,11 +245,11 @@ const Index = () => {
                           value={newCategory}
                           onChange={(e) => setNewCategory(e.target.value)}
                           placeholder="اسم الفئة"
-                          className="bg-white/50"
+                          className="bg-white/80 border-[#E5E9F0]"
                         />
                       </div>
                       <DialogFooter>
-                        <Button onClick={handleAddCategory} className="bg-[#403E43] hover:bg-[#1A1F2C]">
+                        <Button onClick={handleAddCategory} className="bg-[#3498DB] hover:bg-[#2980B9]">
                           إضافة الفئة
                         </Button>
                       </DialogFooter>
@@ -257,7 +257,7 @@ const Index = () => {
                   </Dialog>
                 </div>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="bg-white/50">
+                  <SelectTrigger className="bg-white/80 border-[#E5E9F0]">
                     <SelectValue placeholder="اختر الفئة" />
                   </SelectTrigger>
                   <SelectContent>
@@ -271,18 +271,18 @@ const Index = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-[#1A1F2C] mb-2">الوصف</label>
+                <label className="block text-sm font-medium text-[#2C3E50] mb-2">الوصف</label>
                 <Input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="أدخل وصف المصروف"
-                  className="bg-white/50"
+                  className="bg-white/80 border-[#E5E9F0] focus:border-[#3498DB] focus:ring-[#3498DB]"
                 />
               </div>
             </div>
 
-            <div className="pt-4 border-t border-gray-200">
-              <Button type="submit" className="w-full bg-[#403E43] hover:bg-[#1A1F2C]">
+            <div className="pt-4 border-t border-[#E5E9F0]">
+              <Button type="submit" className="w-full bg-[#3498DB] hover:bg-[#2980B9] transition-colors">
                 {editingExpense ? "تحديث المصروف" : "تسجيل المصروف"}
               </Button>
               
@@ -290,7 +290,7 @@ const Index = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full mt-2 border-[#403E43] text-[#403E43] hover:bg-[#403E43] hover:text-white"
+                  className="w-full mt-2 border-[#3498DB] text-[#3498DB] hover:bg-[#3498DB] hover:text-white"
                   onClick={() => {
                     setEditingExpense(null);
                     setAmount("");
@@ -306,47 +306,47 @@ const Index = () => {
         </Card>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="p-6 bg-[#E5DEFF] border-none shadow-md">
+          <Card className="p-6 bg-gradient-to-br from-[#3498DB]/10 to-[#3498DB]/5 border-none shadow-lg rounded-xl backdrop-blur-sm">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-[#1A1F2C]">إجمالي المصاريف</h2>
-              <ChartBar className="h-5 w-5 text-[#403E43]" />
+              <h2 className="text-xl font-semibold text-[#2C3E50]">إجمالي المصاريف</h2>
+              <ChartBar className="h-5 w-5 text-[#3498DB]" />
             </div>
-            <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#2C3E50]">${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
 
-          <Card className="p-6 bg-[#D3E4FD] border-none shadow-md">
+          <Card className="p-6 bg-gradient-to-br from-[#2ECC71]/10 to-[#2ECC71]/5 border-none shadow-lg rounded-xl backdrop-blur-sm">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-[#1A1F2C]">مصاريف آخر 7 أيام</h2>
-              <Calendar className="h-5 w-5 text-[#403E43]" />
+              <h2 className="text-xl font-semibold text-[#2C3E50]">مصاريف آخر 7 أيام</h2>
+              <Calendar className="h-5 w-5 text-[#2ECC71]" />
             </div>
-            <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#2C3E50]">${last7DaysExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
 
-          <Card className="p-6 bg-[#FEF7CD] border-none shadow-md">
+          <Card className="p-6 bg-gradient-to-br from-[#F1C40F]/10 to-[#F1C40F]/5 border-none shadow-lg rounded-xl backdrop-blur-sm">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-[#1A1F2C]">متوسط المصاريف اليومي</h2>
-              <TrendingUp className="h-5 w-5 text-[#403E43]" />
+              <h2 className="text-xl font-semibold text-[#2C3E50]">متوسط المصاريف اليومي</h2>
+              <TrendingUp className="h-5 w-5 text-[#F1C40F]" />
             </div>
-            <p className="mt-2 text-3xl font-bold text-[#1A1F2C]">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="mt-2 text-3xl font-bold text-[#2C3E50]">${averageDailyExpense.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </Card>
         </div>
 
-        <Card className="p-6 bg-[#F1F0FB] border-none shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-[#1A1F2C]">المصاريف حسب الفئة</h2>
+        <Card className="p-6 bg-white/90 backdrop-blur-sm border-none shadow-lg rounded-xl">
+          <h2 className="text-xl font-semibold mb-4 text-[#2C3E50]">المصاريف حسب الفئة</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {Object.entries(expensesByCategory).map(([cat, amount]) => (
-              <div key={cat} className="flex items-center justify-between p-4 bg-white/50 rounded-lg">
-                <span className="font-medium text-[#1A1F2C]">{cat}</span>
-                <span className="font-bold text-[#403E43]">${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              <div key={cat} className="flex items-center justify-between p-4 bg-gradient-to-r from-[#3498DB]/5 to-transparent rounded-lg border border-[#E5E9F0]">
+                <span className="font-medium text-[#2C3E50]">{cat}</span>
+                <span className="font-bold text-[#3498DB]">${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
               </div>
             ))}
           </div>
         </Card>
 
-        <Card className="p-6 bg-[#F1F0FB] border-none shadow-md">
+        <Card className="p-6 bg-white/90 backdrop-blur-sm border-none shadow-lg rounded-xl">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-[#1A1F2C]">سجل المصاريف</h2>
-            <span className="text-sm text-muted-foreground">
+            <h2 className="text-xl font-semibold text-[#2C3E50]">سجل المصاريف</h2>
+            <span className="text-sm text-[#7F8C8D] bg-[#ECF0F1] px-3 py-1 rounded-full">
               {expenses.length} مصروف
             </span>
           </div>
@@ -354,23 +354,23 @@ const Index = () => {
             {expenses.map((expense) => (
               <div
                 key={expense.id}
-                className="flex items-center justify-between p-4 bg-white/50 rounded-lg hover:bg-white/70 transition-colors"
+                className="flex items-center justify-between p-4 bg-gradient-to-r from-[#3498DB]/5 to-transparent rounded-lg border border-[#E5E9F0] hover:border-[#3498DB]/30 transition-colors"
               >
                 <div>
-                  <p className="font-medium text-[#1A1F2C]">{expense.description}</p>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="px-2 py-1 bg-[#E5DEFF] rounded text-[#403E43]">{expense.category}</span>
+                  <p className="font-medium text-[#2C3E50]">{expense.description}</p>
+                  <div className="flex items-center gap-2 text-sm text-[#7F8C8D] mt-1">
+                    <span className="px-2 py-1 bg-[#3498DB]/10 rounded-full text-[#3498DB]">{expense.category}</span>
                     <span>{expense.date}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <p className="font-bold text-[#1A1F2C]">${expense.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                  <p className="font-bold text-[#2C3E50]">${expense.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                   <div className="flex gap-2">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => handleEdit(expense)}
-                      className="hover:bg-[#E5DEFF]"
+                      className="hover:bg-[#3498DB]/10 text-[#3498DB]"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -378,7 +378,7 @@ const Index = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => setDeleteExpenseId(expense.id)}
-                      className="hover:bg-[#FFDEE2]"
+                      className="hover:bg-red-100 text-red-500"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -388,14 +388,14 @@ const Index = () => {
             ))}
             
             {expenses.length === 0 && (
-              <p className="text-center text-muted-foreground">لا توجد مصاريف مسجلة</p>
+              <p className="text-center text-[#7F8C8D]">لا توجد مصاريف مسجلة</p>
             )}
           </div>
         </Card>
       </div>
 
       <AlertDialog open={deleteExpenseId !== null} onOpenChange={() => setDeleteExpenseId(null)}>
-        <AlertDialogContent className="bg-[#F1F0FB]">
+        <AlertDialogContent className="bg-white backdrop-blur-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>هل أنت متأكد من حذف هذا المصروف؟</AlertDialogTitle>
             <AlertDialogDescription>
@@ -403,10 +403,10 @@ const Index = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="hover:bg-[#FFDEE2]">إلغاء</AlertDialogCancel>
+            <AlertDialogCancel className="hover:bg-red-50">إلغاء</AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => deleteExpenseId && handleDelete(deleteExpenseId)}
-              className="bg-[#403E43] hover:bg-[#1A1F2C]"
+              className="bg-[#3498DB] hover:bg-[#2980B9]"
             >
               تأكيد الحذف
             </AlertDialogAction>
