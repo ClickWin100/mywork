@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -113,10 +112,7 @@ const Login = () => {
     
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(
-        "absoool4@gmail.com",
-        {
-          redirectTo: window.location.origin + "/reset-password",
-        }
+        "absoool4@gmail.com"
       );
 
       if (error) {
@@ -140,9 +136,9 @@ const Login = () => {
         title: "خطأ غير متوقع",
         description: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى",
       });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
