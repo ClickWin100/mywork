@@ -44,7 +44,6 @@ const Login = () => {
     if (!error && data) {
       setIsFirstLogin(data.is_first_login);
     } else if (error && error.code === "PGRST116") {
-      // إذا لم يتم العثور على السجل، قم بإنشائه
       await supabase
         .from("user_settings")
         .insert([{ username: "absoool", is_first_login: true }]);
@@ -62,6 +61,7 @@ const Login = () => {
     });
 
     if (error) {
+      console.error("Login error:", error);
       toast({
         variant: "destructive",
         title: "خطأ في تسجيل الدخول",
@@ -90,6 +90,7 @@ const Login = () => {
     });
 
     if (error) {
+      console.error("Initial password setup error:", error);
       toast({
         variant: "destructive",
         title: "خطأ في تعيين كلمة المرور",
@@ -108,21 +109,39 @@ const Login = () => {
 
   const handleResetPassword = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail("absoool4@gmail.com");
+    console.log("Attempting to reset password for:", "absoool4@gmail.com");
+    
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        "absoool4@gmail.com",
+        {
+          redirectTo: window.location.origin + "/reset-password",
+        }
+      );
 
-    if (error) {
+      if (error) {
+        console.error("Reset password error:", error);
+        toast({
+          variant: "destructive",
+          title: "خطأ في إرسال رابط إعادة تعيين كلمة المرور",
+          description: error.message || "حدث خطأ أثناء إرسال الرابط. يرجى المحاولة مرة أخرى",
+        });
+      } else {
+        toast({
+          title: "تم إرسال رابط إعادة تعيين كلمة المرور",
+          description: "يرجى التحقق من بريدك الإلكتروني",
+        });
+        setShowResetDialog(false);
+      }
+    } catch (err) {
+      console.error("Unexpected error during password reset:", err);
       toast({
         variant: "destructive",
-        title: "خطأ في إرسال رابط إعادة تعيين كلمة المرور",
-        description: "حدث خطأ أثناء إرسال الرابط. يرجى المحاولة مرة أخرى",
+        title: "خطأ غير متوقع",
+        description: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى",
       });
-    } else {
-      toast({
-        title: "تم إرسال رابط إعادة تعيين كلمة المرور",
-        description: "يرجى التحقق من بريدك الإلكتروني",
-      });
-      setShowResetDialog(false);
     }
+
     setLoading(false);
   };
 
