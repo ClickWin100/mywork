@@ -16,6 +16,7 @@ import {
 
 const DEFAULT_USERNAME = "absoool";
 const DEFAULT_PASSWORD = "absoool$1984";
+const DEFAULT_EMAIL = "absoool4@gmail.com";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -30,9 +31,19 @@ const Login = () => {
   }, []);
 
   const checkSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      navigate("/");
+    try {
+      console.log("Checking session...");
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Session check error:", sessionError);
+        return;
+      }
+      if (session) {
+        console.log("Active session found, redirecting...");
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Unexpected error during session check:", err);
     }
   };
 
@@ -40,74 +51,86 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    if (username !== DEFAULT_USERNAME) {
-      toast({
-        variant: "destructive",
-        title: "خطأ في تسجيل الدخول",
-        description: "اسم المستخدم غير صحيح",
-      });
-      setLoading(false);
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: "absoool4@gmail.com",
-      password: password,
-    });
-
-    if (error) {
-      console.error("Login error:", error);
-      if (password === DEFAULT_PASSWORD) {
-        // إذا كان المستخدم يستخدم كلمة المرور الافتراضية، نقوم بإنشاء حساب جديد
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: "absoool4@gmail.com",
-          password: DEFAULT_PASSWORD,
-        });
-
-        if (signUpError) {
-          toast({
-            variant: "destructive",
-            title: "خطأ في إنشاء الحساب",
-            description: "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى",
-          });
-        } else {
-          toast({
-            title: "تم إنشاء الحساب بنجاح",
-            description: "يمكنك الآن تسجيل الدخول باستخدام كلمة المرور الافتراضية",
-          });
-          // نحاول تسجيل الدخول مباشرة
-          const { error: loginError } = await supabase.auth.signInWithPassword({
-            email: "absoool4@gmail.com",
-            password: DEFAULT_PASSWORD,
-          });
-          
-          if (!loginError) {
-            navigate("/");
-            return;
-          }
-        }
-      } else {
+    try {
+      if (username !== DEFAULT_USERNAME) {
         toast({
           variant: "destructive",
           title: "خطأ في تسجيل الدخول",
-          description: "كلمة المرور غير صحيحة",
+          description: "اسم المستخدم غير صحيح",
         });
+        return;
       }
-    } else if (data.user) {
-      navigate("/");
-    }
 
-    setLoading(false);
+      console.log("Attempting login with:", { email: DEFAULT_EMAIL, password });
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: DEFAULT_EMAIL,
+        password: password,
+      });
+
+      if (error) {
+        console.error("Login error:", error);
+        
+        if (password === DEFAULT_PASSWORD) {
+          console.log("Attempting to create account with default credentials...");
+          const { error: signUpError } = await supabase.auth.signUp({
+            email: DEFAULT_EMAIL,
+            password: DEFAULT_PASSWORD,
+          });
+
+          if (signUpError) {
+            console.error("Signup error:", signUpError);
+            toast({
+              variant: "destructive",
+              title: "خطأ في إنشاء الحساب",
+              description: "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى",
+            });
+          } else {
+            toast({
+              title: "تم إنشاء الحساب بنجاح",
+              description: "يمكنك الآن تسجيل الدخول باستخدام كلمة المرور الافتراضية",
+            });
+            
+            const { error: loginError } = await supabase.auth.signInWithPassword({
+              email: DEFAULT_EMAIL,
+              password: DEFAULT_PASSWORD,
+            });
+            
+            if (!loginError) {
+              navigate("/");
+              return;
+            }
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "خطأ في تسجيل الدخول",
+            description: "كلمة المرور غير صحيحة",
+          });
+        }
+      } else if (data.user) {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Unexpected error during login:", err);
+      toast({
+        variant: "destructive",
+        title: "خطأ غير متوقع",
+        description: "حدث خطأ غير متوقع أثناء تسجيل الدخول",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleResetPassword = async () => {
     setLoading(true);
-    console.log("Attempting to reset password for:", "absoool4@gmail.com");
-    
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        "absoool4@gmail.com"
-      );
+      console.log("Attempting to reset password for:", DEFAULT_EMAIL);
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(DEFAULT_EMAIL, {
+        redirectTo: window.location.origin + '/reset-password',
+      });
 
       if (error) {
         console.error("Reset password error:", error);

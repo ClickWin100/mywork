@@ -9,5 +9,18 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true
+  },
+  global: {
+    fetch: (url, options = {}) => {
+      const headers = new Headers(options.headers);
+      headers.set('Cache-Control', 'no-cache');
+      
+      return fetch(url, {
+        ...options,
+        headers,
+        cache: 'no-store',
+      });
+    }
   }
 });
+
