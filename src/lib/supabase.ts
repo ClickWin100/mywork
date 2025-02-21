@@ -11,16 +11,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true
   },
   global: {
-    headers: {
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache'
-    },
-    fetch: (...args) => {
-      // @ts-ignore
-      return fetch(...args).catch(err => {
-        console.error('Supabase fetch error:', err);
-        throw err;
+    fetch: (url: RequestInfo | URL, options?: RequestInit) => {
+      const headers = new Headers(options?.headers || {});
+      headers.set('Cache-Control', 'no-cache');
+      headers.set('Pragma', 'no-cache');
+
+      return fetch(url, {
+        ...options,
+        headers,
+        cache: 'no-store'
       });
     }
   }
 });
+
