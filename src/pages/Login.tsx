@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 const DEFAULT_USERNAME = "absoool";
-const DEFAULT_PASSWORD = "absoool123";
+const DEFAULT_PASSWORD = "absoool$1984";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
